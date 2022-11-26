@@ -47,7 +47,15 @@
                 </div>
 
                 <div class="slds-col slds-p-top_large">
-                    <lightning-button label="Send OTP" variant="brand" value={VerifyEmail} onclick={handleEmailVerify}>
+                    <lightning-button label="Verify" variant="brand" value={VerifyEmail} onclick={handleEmailVerify}>
+                    </lightning-button>
+                </div>
+                <div class="slds-col">
+                    <lightning-input label="Enter Your OTP"  value={otpValue} onclick={handleOTP}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-p-top_large">
+                    <lightning-button label="Submit" variant="brand" value={otpValue} onclick={handleOtpVerify}>
                     </lightning-button>
                 </div>
 

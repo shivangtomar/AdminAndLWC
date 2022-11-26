@@ -52,8 +52,9 @@ export default class candidateTask extends LightningElement {
     //input field for qualification using api 
     @api qual = {
         selectqualification: '',
+        fileShivang: '',
         yearOfpassing: '',
-        percentage: '',
+        percentage: 0,
         key: this.index
     }
 
@@ -156,20 +157,13 @@ export default class candidateTask extends LightningElement {
     //<<-------------------------------------------------------------------------------------------->>
 
     // Putting the values with the help of OnChange Methods ----- NEW QUALIFICATION WITH JS
-
+    
     handleQualificationChange(event) {
 
         this.value = event.detail.value;
 
     }
-
-    handleSelectQualificationChange(event) {
-        var selectedRow = event.currentTarget;
-        var key = selectedRow.dataset.id;
-        var qVar = this.qualList[key];
-        this.qualList[key].selectqualification = event.target.value;
-
-    }
+    
 
     handleYearOfPassingChange(event) {
 
@@ -177,6 +171,7 @@ export default class candidateTask extends LightningElement {
         var key = selectedRow.dataset.id;
         var qVar = this.qualList[key];
         this.qualList[key].yearOfpassing = event.target.value;
+        console.log('Year qualList year of passing= ' +this.qualList[key].yearOfpassing);
     }
 
     handlePercentageChange(event) {
@@ -185,6 +180,7 @@ export default class candidateTask extends LightningElement {
         var key = selectedRow.dataset.id;
         var qVar = this.qualList[key];
         this.qualList[key].percentage = event.target.value;
+        console.log('Year qualList Percentage ==> ' +this.qualList[key].percentage);
     }
 
     // File Upload - Upload Button
@@ -233,7 +229,9 @@ export default class candidateTask extends LightningElement {
 
                 //QUALIFICATION METHOD
 
-                createQualificationRecord({ quList: this.qualList, qualId: this.candidateId })
+                
+
+                createQualificationRecord({ quList: JSON.stringify(this.qualList) , qualId: this.candidateId })
                     .then(result => {
                         this.message = result;
                         this.error = undefined;
@@ -264,13 +262,6 @@ export default class candidateTask extends LightningElement {
                 this.error = errorM.message;
                 console.error(errorM);
             });
-
-
-
-
-
-
-
 
 
 
