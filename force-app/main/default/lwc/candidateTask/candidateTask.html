@@ -1,5 +1,5 @@
 <template>
-    <lightning-card icon-name="custom:custom11" title="Candidate Information (Welcome to lwc Shivang)">
+    <lightning-card icon-name="custom:custom15" title="Candidate Information">
 
         <div class="slds-p-around_x-small">
 
@@ -31,19 +31,10 @@
             </lightning-input>
 
             <!-- Phone Field -->
-            <div class="slds-grid slds-gutters">
-                <div class="slds-col">
-                    <lightning-input label="Phone Number" pattern="[0-9]{10}"
-                        message-when-pattern-mismatch="Please Enter Valid Mobile Number"
-                        value={getCandidateRecord.Phone} onchange={handlePhoneChange}>
-                    </lightning-input>
-                </div>
-
-                <div class="slds-col slds-p-top_large">
-                    <lightning-button label="Verify Phone" label-w value={VerifyPhone} onclick={handlePhoneVerify}>
-                    </lightning-button>
-                </div>
-            </div>
+            <lightning-input label="Phone Number" pattern="[0-9]{10}"
+                message-when-pattern-mismatch="Please Enter Valid Mobile Number" value={getCandidateRecord.Phone}
+                onchange={handlePhoneChange}>
+            </lightning-input>
 
 
             <!-- Email Field -->
@@ -56,7 +47,7 @@
                 </div>
 
                 <div class="slds-col slds-p-top_large">
-                    <lightning-button label="Verify Email" value={VerifyEmail} onclick={handleEmailVerify}>
+                    <lightning-button label="Send OTP" variant="brand" value={VerifyEmail} onclick={handleEmailVerify}>
                     </lightning-button>
                 </div>
 
@@ -68,26 +59,20 @@
 
     </lightning-card>
 
-    <lightning-card icon-name="custom:custom33" title="Qualification Details">
+    <lightning-card icon-name="custom:custom13" title="Qualification Details">
         <div class="slds-p-around_x-small">
 
             <!-- Qualification 2 START -->
 
             <div class="slds-m-around--xx-medium container-fluid">
-                <div class="slds-float_right slds-p-bottom_small">
-                    <p>
-                        <lightning-button label="Add Row" variant="brand" value={save} onclick={addRow}>
-                        </lightning-button>
-                    </p>
-                </div>
 
                 <div class="container-fluid">
                     <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                         <thead>
                             <tr class="slds-text-title_caps">
-                                <th scope="col">
+                                <!-- <th scope="col">
                                     <div class="slds-truncate">#</div>
-                                </th>
+                                </th> -->
                                 <th scope="col">
                                     <div class="slds-truncate" title="Select Qualification">Select Qualification</div>
                                 </th>
@@ -108,12 +93,12 @@
                         </thead>
                         <tbody>
 
-                            
+
 
                             <template for:each={qualList} for:item="qual" for:index="indx">
 
                                 <tr key={qual.key} id={qual.key}>
-                                    <td>{indx}</td>
+                                    <!-- <td>{indx}</td> -->
                                     <td>
                                         <template if:true={SelectqualPicklistValues.data}>
 
@@ -163,10 +148,30 @@
 
             <!-- Qualification 2 END -->
 
+            <!-- TWO BUTTONS -->
+            <div class="slds-grid slds-gutters slds-p-top_large">
 
-            <div class=”slds-p-top_large”>
-                <lightning-button label="Submit" variant="brand" value={save} onclick={handleSave}></lightning-button>
+                <div class="slds-col">
+                    <lightning-button class="slds-float_right" label="Add Row" variant="brand" value={save}
+                        onclick={addRow}>
+                    </lightning-button>
+                </div>
+
+                <div class="slds-col">
+                    <lightning-button class="slds-float_left" label="Submit" variant="brand" value={save}
+                        onclick={handleSave}>
+                    </lightning-button>
+                </div>
+
+                <!-- TWO BUTTONS END-->
+
+
             </div>
+
+
+
+
+
         </div>
 
 

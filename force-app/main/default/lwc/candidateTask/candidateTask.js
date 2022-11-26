@@ -216,7 +216,7 @@ export default class candidateTask extends LightningElement {
 
         // CANDIDATE METHOD CALLING
 
-        createCandidate({ FirstNamecls: this.getCandidateRecord.FirstName, MiddleNamecls: this.getCandidateRecord.MiddleName, LastNamecls: this.getCandidateRecord.LastName, Pancls: this.getCandidateRecord.Pan, Phonecls: this.getCandidateRecord.Phone, Emailcls: this.getCandidateRecord.Email, Address__c: this.getCandidateRecord.Address })
+        createCandidate({ FirstNamecls: this.getCandidateRecord.FirstName, MiddleNamecls: this.getCandidateRecord.MiddleName, LastNamecls: this.getCandidateRecord.LastName, Pancls: this.getCandidateRecord.Pan, Phonecls: this.getCandidateRecord.Phone, Emailcls: this.getCandidateRecord.Email, Addresscls: this.getCandidateRecord.Address })
             .then(result => {
                 this.getCandidateRecord = {};
                 this.candidateId = result.Id;
