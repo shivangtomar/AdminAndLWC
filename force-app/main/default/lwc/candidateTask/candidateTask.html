@@ -1,0 +1,177 @@
+<template>
+    <lightning-card icon-name="custom:custom11" title="Candidate Information (Welcome to lwc Shivang)">
+
+        <div class="slds-p-around_x-small">
+
+
+            <!-- Name Field -->
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <lightning-input label="First Name" value={getCandidateRecord.FirstName}
+                        onchange={handleFirstNameChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-col">
+                    <lightning-input label="Middle Name" value={getCandidateRecord.MiddleName}
+                        onchange={handleMiddleNameChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input label="Last Name" value={getCandidateRecord.LastName}
+                        onchange={handleLastNameChange}>
+                    </lightning-input>
+                </div>
+
+            </div>
+            <!-- PAN Field -->
+            <lightning-input label="PAN Number" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                message-when-pattern-mismatch="Please Enter Valid PAN Number" value={getCandidateRecord.Pan}
+                onchange={handlePanChange}>
+            </lightning-input>
+
+            <!-- Phone Field -->
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <lightning-input label="Phone Number" pattern="[0-9]{10}"
+                        message-when-pattern-mismatch="Please Enter Valid Mobile Number"
+                        value={getCandidateRecord.Phone} onchange={handlePhoneChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-col slds-p-top_large">
+                    <lightning-button label="Verify Phone" label-w value={VerifyPhone} onclick={handlePhoneVerify}>
+                    </lightning-button>
+                </div>
+            </div>
+
+
+            <!-- Email Field -->
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                    <lightning-input label="Email" pattern="[A-Za-z0-9._-]+@[A-Za-z.]+"
+                        message-when-pattern-mismatch="Please Enter Valid Email Address"
+                        value={getCandidateRecord.Email} onchange={handleEmailChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-col slds-p-top_large">
+                    <lightning-button label="Verify Email" value={VerifyEmail} onclick={handleEmailVerify}>
+                    </lightning-button>
+                </div>
+
+            </div>
+            <!-- Address Field -->
+            <lightning-input label="Address" value={getCandidateRecord.Address} onchange={handleAddressChange}>
+            </lightning-input>
+        </div>
+
+    </lightning-card>
+
+    <lightning-card icon-name="custom:custom33" title="Qualification Details">
+        <div class="slds-p-around_x-small">
+
+            <!-- Qualification 2 START -->
+
+            <div class="slds-m-around--xx-medium container-fluid">
+                <div class="slds-float_right slds-p-bottom_small">
+                    <p>
+                        <lightning-button label="Add Row" variant="brand" value={save} onclick={addRow}>
+                        </lightning-button>
+                    </p>
+                </div>
+
+                <div class="container-fluid">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <th scope="col">
+                                    <div class="slds-truncate">#</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Select Qualification">Select Qualification</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Year Of Passing">Year Of Passing</div>
+                                </th>
+
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Percentage">Percentage</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Marksheet">Marksheet</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Action">Action</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            
+
+                            <template for:each={qualList} for:item="qual" for:index="indx">
+
+                                <tr key={qual.key} id={qual.key}>
+                                    <td>{indx}</td>
+                                    <td>
+                                        <template if:true={SelectqualPicklistValues.data}>
+
+                                            <lightning-combobox name="progress" label="Select Qualification"
+                                                value={value} placeholder="-Select-"
+                                                options={SelectqualPicklistValues.data.values}
+                                                onchange={handleQualificationChange}>
+
+                                            </lightning-combobox>
+
+                                        </template>
+                                    </td>
+
+                                    <td>
+                                        <lightning-input data-id={indx} label="Year Of Passing"
+                                            value={qual.yearOfpassing} onchange={handleYearOfPassingChange}>
+                                        </lightning-input>
+                                    </td>
+
+                                    <td>
+                                        <lightning-input data-id={indx} label="Percentage" value={qual.percentage}
+                                            onchange={handlePercentageChange}></lightning-input>
+                                    </td>
+
+                                    <td>
+                                        <lightning-input data-id={indx} type="file"
+                                            accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf" label="Marksheet"
+                                            onchange={handleopenfileUpload}></lightning-input>
+                                        <template if:true={fileData}>
+                                            <p>{fileData.filename}</p>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <lightning-button-icon icon-name="utility:delete" data-id={indx}
+                                            alternative-text="Delete" class="slds-m-left_xx-small" onclick={removeRow}
+                                            title="Delete"></lightning-button-icon>
+                                    </td>
+                                </tr>
+
+
+                            </template>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Qualification 2 END -->
+
+
+            <div class=”slds-p-top_large”>
+                <lightning-button label="Submit" variant="brand" value={save} onclick={handleSave}></lightning-button>
+            </div>
+        </div>
+
+
+
+    </lightning-card>
+
+
+</template>
