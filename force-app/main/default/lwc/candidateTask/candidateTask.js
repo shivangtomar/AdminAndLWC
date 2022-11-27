@@ -27,13 +27,31 @@ export default class candidateTask extends LightningElement {
     @track qualificationId;
     @track value;
     EmailToAddress;
+    SentOtp;
+    VerfiedOtp;
+    messageOtp;
+
+    otpvalueData;
+
+
+    @track lstAllFiles = [];
 
 
     // FOR QUALIFICATION
-    @track qualList = [];
+    @track qualList = [{
+        selectqualification: '',
+        fileData: '',
+        filenameShivang: '',
+        yearOfpassing: '',
+        percentage: null,
+        key: ''
+    }];
     @track index = 0;
     @api qualRecordId;
     isLoaded = false;
+    get acceptedFormats() {
+        return ['.pdf', '.png', '.jpg', '.xlsx'];
+    }
 
     //<<-------------------------------------------------------------------------------------------->>
 
@@ -52,10 +70,11 @@ export default class candidateTask extends LightningElement {
     //input field for qualification using api 
     @api qual = {
         selectqualification: '',
-        fileShivang: '',
+        fileData: '',
+        filenameShivang: '',
         yearOfpassing: '',
-        percentage: 0,
-        key: this.index
+        percentage: null,
+        key: ''
     }
 
 
@@ -84,13 +103,11 @@ export default class candidateTask extends LightningElement {
     addRow() {
 
         this.index++;
-        //var i = JSON.parse(JSON.stringify(this.index));
         var i = this.index;
-
         this.qual.key = i;
+
         this.qualList.push(JSON.parse(JSON.stringify(this.qual)));
 
-        console.log('Enter ', this.qualList);
     }
 
     // REMOVE ROW
@@ -112,7 +129,7 @@ export default class candidateTask extends LightningElement {
 
     //<<-------------------------------------------------------------------------------------------->>
 
-    
+
 
     //<<-------------------------------------------------------------------------------------------->>
     // Putting the values with the help of OnChange Methods - Candidate
@@ -154,16 +171,26 @@ export default class candidateTask extends LightningElement {
         console.log('Address ==> ' + this.getCandidateRecord.Address);
     }
 
+    handleOtpChange(event) {
+        this.otpValue = event.target.value;
+        console.log('Writing OTP ==> ' + this.otpValue);
+
+    }
+
     //<<-------------------------------------------------------------------------------------------->>
 
     // Putting the values with the help of OnChange Methods ----- NEW QUALIFICATION WITH JS
-    
+
+
     handleQualificationChange(event) {
 
-        this.value = event.detail.value;
+        var selectedRow = event.currentTarget;
+        var key = selectedRow.dataset.id;
+        var qVar = this.qualList[key];
+        this.qualList[key].selectqualification = event.detail.value;
 
     }
-    
+
 
     handleYearOfPassingChange(event) {
 
@@ -171,7 +198,7 @@ export default class candidateTask extends LightningElement {
         var key = selectedRow.dataset.id;
         var qVar = this.qualList[key];
         this.qualList[key].yearOfpassing = event.target.value;
-        console.log('Year qualList year of passing= ' +this.qualList[key].yearOfpassing);
+        console.log('Year qualList year of passing= ' + this.qualList[key].yearOfpassing);
     }
 
     handlePercentageChange(event) {
@@ -180,23 +207,32 @@ export default class candidateTask extends LightningElement {
         var key = selectedRow.dataset.id;
         var qVar = this.qualList[key];
         this.qualList[key].percentage = event.target.value;
-        console.log('Year qualList Percentage ==> ' +this.qualList[key].percentage);
+        console.log('Year qualList Percentage ==> ' + this.qualList[key].percentage);
     }
 
     // File Upload - Upload Button
-    fileData
+
     handleopenfileUpload(event) {
+        console.log('INSIDE lstUploadedFiles');
+        var selectedRow = event.currentTarget;
+        var key = selectedRow.dataset.id;
+        console.log('hello ',this.qualList)
+        console.log(this.qualList[key])
+        console.log('target', event.target.files)
+       
         const file = event.target.files[0]
+        console.log(this.qualList)
+        console.log(this.qualList[key])
         var reader = new FileReader()
         reader.onload = () => {
             var base64 = reader.result.split(',')[1]
-            this.fileData = {
+            this.qualList[key].fileData = {
                 'filename': file.name,
                 'base64': base64,
-                'recordId': this.recordId
             }
-            console.log(this.fileData)
+            console.log(this.qualList.fileData.filename)
         }
+
         reader.readAsDataURL(file)
     }
 
@@ -208,7 +244,19 @@ export default class candidateTask extends LightningElement {
     //<<-------------------------------------------------------------------------------------------->>
 
     handleSave() {
-        alert('Submit Clicked');
+
+        // VALIDATION FOR FIELDS 
+
+        const allValid = [...this.template.querySelectorAll('lightning-input')]
+            .reduce((validSoFar, inputCmp) => {
+                inputCmp.reportValidity();
+                return validSoFar && inputCmp.checkValidity();
+            }, true);
+        if (allValid) {
+            alert('All form entries look valid. Ready to submit!');
+        } else {
+            alert('Please update the invalid form entries and try again.');
+        }
 
         // CANDIDATE METHOD CALLING
 
@@ -216,6 +264,7 @@ export default class candidateTask extends LightningElement {
             .then(result => {
                 this.getCandidateRecord = {};
                 this.candidateId = result.Id;
+
 
                 window.console.log('Results ==> ' + result);
 
@@ -229,32 +278,36 @@ export default class candidateTask extends LightningElement {
 
                 //QUALIFICATION METHOD
 
-                
 
-                createQualificationRecord({ quList: JSON.stringify(this.qualList) , qualId: this.candidateId })
+
+                createQualificationRecord({ quList: JSON.stringify(this.qualList), qualId: this.candidateId })
                     .then(result => {
-                        this.message = result;
-                        this.error = undefined;
-                        if (this.message !== undefined) {
-                            this.qual.selectqualification = '';
-                            this.qual.yearOfpassing = '';
-                            this.qual.percentage = '';
-                        }
+                        this.qualList = [];
+
                     })
                     .catch(errorQ => {
                         this.error = errorQ.message;
                         console.error(errorQ);
                     });
 
+                this.qualList.forEach(element => {
+                    const { base64, filename, recordId } = element.fileData
+                    uploadFile({ base64, filename, recordId: this.candidateId }).then(result => {
 
-                    // FILE METHOD CALLING
-        const { base64, filename, recordId } = this.fileData
-        uploadFile({ base64, filename, recordId: this.candidateId}).then(result => {
-            this.fileData = null
-            let title = `${filename} uploaded successfully!!`
-            this.toast(title)
-        })
+                        let title = `${filename} uploaded successfully!!`
+                        this.toast(title)
+                    }).then((result) => {
+                        console.log('result: ', result);
+                    }).catch((error) => {
+                        console.log('Error: ', error);
+                    })
 
+                });
+                // FILE METHOD CALLING 
+
+
+
+                //CANDIDATE CATCH
 
 
             })
@@ -263,24 +316,6 @@ export default class candidateTask extends LightningElement {
                 console.error(errorM);
             });
 
-
-
-
-        // FILE METHOD CALLING
-        const { base64, filename, recordId } = this.fileData
-        uploadFile({ base64, filename, candidateId }).then(result => {
-            this.fileData = null
-            let title = `${filename} uploaded successfully!!`
-            this.toast(title)
-        })
-    }
-
-    toast(title) {
-        const toastEvent = new ShowToastEvent({
-            title,
-            variant: "success"
-        })
-        this.dispatchEvent(toastEvent)
 
     }
 
@@ -297,24 +332,33 @@ export default class candidateTask extends LightningElement {
     // SUBMIT VERIFY EMAIL METHOD
 
     handleEmailVerify() {
-        sendOTP({ EmailField: this.EmailToAddress }).then(result => {
-            alert('OTP send successfully. Please check your email');
+
+        sendOTP({ EmailField: this.EmailToAddress}).then(result => {
+            
+            this.otpvalueData = result;
+            this.SentOtp = true;
+
         }).catch(error => {
             alert('Invalid Email . Please check . Thank You!!')
         })
     }
 
+    // HANDLE OTP VERIFICATION
+
+    handleOtpVerify() {
+        if(this.otpvalueData === this.otpValue){
+            
+            this.VerfiedOtp = true;
+
+        }
+        else{
+            this.messageOtp = 'Incorrect OTP'
+            
+            this.VerfiedOtp = false;
+        }
     //<<-------------------------------------------------------------------------------------------->>
 
-    //Qualification submit Method - TESTING VERSION 1.O SHIVANG
-
-
-
-
-
-
-
-
+    }
 
 
 }

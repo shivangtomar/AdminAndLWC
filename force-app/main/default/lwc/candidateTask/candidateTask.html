@@ -27,7 +27,7 @@
             <!-- PAN Field -->
             <lightning-input label="PAN Number" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
                 message-when-pattern-mismatch="Please Enter Valid PAN Number" value={getCandidateRecord.Pan}
-                onchange={handlePanChange}>
+                onchange={handlePanChange} required="PAN is a Required Field">
             </lightning-input>
 
             <!-- Phone Field -->
@@ -44,19 +44,24 @@
                         message-when-pattern-mismatch="Please Enter Valid Email Address"
                         value={getCandidateRecord.Email} onchange={handleEmailChange}>
                     </lightning-input>
+                    <p if:true={SentOtp}>OTP SENT</p>
                 </div>
+                
 
                 <div class="slds-col slds-p-top_large">
-                    <lightning-button label="Verify" variant="brand" value={VerifyEmail} onclick={handleEmailVerify}>
+                    <lightning-button label="Send OTP" variant="brand" value={VerifyEmail} onclick={handleEmailVerify}>
                     </lightning-button>
                 </div>
                 <div class="slds-col">
-                    <lightning-input label="Enter Your OTP"  value={otpValue} onclick={handleOTP}>
+                    <lightning-input label="Enter Your OTP" value={otpValue} onchange={handleOtpChange}>
                     </lightning-input>
+                    <p if:true={VerfiedOtp}>Otp Verified</p>
+                    <p if:false={VerfiedOtp}><span if:true={messageOtp}>{messageOtp}</span></p>
                 </div>
                 <div class="slds-col slds-p-top_large">
-                    <lightning-button label="Submit" variant="brand" value={otpValue} onclick={handleOtpVerify}>
+                    <lightning-button label="Verify OTP" variant="brand" value={otpValue} onclick={handleOtpVerify}>
                     </lightning-button>
+                    
                 </div>
 
             </div>
@@ -110,9 +115,9 @@
                                     <td>
                                         <template if:true={SelectqualPicklistValues.data}>
 
-                                            <lightning-combobox name="progress" label="Select Qualification"
-                                                value={value} placeholder="-Select-"
-                                                options={SelectqualPicklistValues.data.values}
+                                            <lightning-combobox data-id={indx} name="progress"
+                                                label="Select Qualification" value={qual.SelectQualification}
+                                                placeholder="-Select-" options={SelectqualPicklistValues.data.values}
                                                 onchange={handleQualificationChange}>
 
                                             </lightning-combobox>
@@ -132,11 +137,14 @@
                                     </td>
 
                                     <td>
-                                        <lightning-input data-id={indx} type="file"
+                                        
+
+                                        <lightning-input data-id={indx} type="file" value={qual.fileData.base64}
                                             accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf" label="Marksheet"
                                             onchange={handleopenfileUpload}></lightning-input>
-                                        <template if:true={fileData}>
-                                            <p>{fileData.filename}</p>
+
+                                        <template if:true={qual.fileData}>
+                                            <p>{qual.fileData.filename}</p>
                                         </template>
                                     </td>
                                     <td>
@@ -164,6 +172,7 @@
                         onclick={addRow}>
                     </lightning-button>
                 </div>
+
 
                 <div class="slds-col">
                     <lightning-button class="slds-float_left" label="Submit" variant="brand" value={save}

@@ -1,8 +1,14 @@
 public with sharing class candidateController {
     
     
+    //<<-------------------------------------------------------------------------------------------->>
+    
+    //METHOD FOR INPUT THE VALUES OF CANDIDATE OBJECT
+    
+    //<<-------------------------------------------------------------------------------------------->>
+    
+    
     @AuraEnabled
-    //Method for getting Candidate Record
     public static Candidate__c createCandidate(String FirstNamecls, String MiddleNamecls, String LastNamecls, String Pancls, String Phonecls, String Emailcls, String Addresscls){
         Candidate__c c = new Candidate__c();
         
@@ -21,35 +27,36 @@ public with sharing class candidateController {
     }
     
     //<<-------------------------------------------------------------------------------------------->>
+    
     //METHOD FOR INPUT THE VALUES OF QUALIFICATION OBJECT IN THE FORM OF LIST
-
-    ////<<-------------------------------------------------------------------------------------------->>
+    
+    //<<-------------------------------------------------------------------------------------------->>
     
     @AuraEnabled
     public static String createQualificationRecord(String quList, String qualId){
-            List<Qualification__c > qualificationToInsert = new List<Qualification__c >();
+        List<Qualification__c > qualificationToInsert = new List<Qualification__c >();
         List<QualificationObj> lstObj =  (List<QualificationObj>) JSON.deserialize(quList, List<QualificationObj>.class);
         
-            if(lstObj.size()>0){
-                for(QualificationObj qual:lstObj){
-                    
-                    Qualification__c qualData = new Qualification__c();
-                    
-                    qualData.Select_Candidate__c = qualId;
-                    qualData.Select_Qualification__c = qual.selectqualification;  
-                    qualData.Year_of_passing__c = qual.yearOfpassing;
-                    qualData.Percentage__c = qual.percentage;
-                    qualificationToInsert.add(qualData);
-                }
-                system.debug('RESULT OF QU LIST ==>> '+lstObj);
+        if(lstObj.size()>0){
+            for(QualificationObj qual:lstObj){
                 
+                Qualification__c qualData = new Qualification__c();
+                
+                qualData.Select_Candidate__c = qualId;
+                qualData.Select_Qualification__c = qual.selectqualification;  
+                qualData.Year_of_passing__c = qual.yearOfpassing;
+                qualData.Percentage__c = qual.percentage;
+                qualificationToInsert.add(qualData);
             }
-            if(qualificationToInsert.size()>0){
-                insert qualificationToInsert;
-                return 'success';
-            }else{
-                return 'unsuccess';
-            }
+            system.debug('RESULT OF QU LIST ==>> '+lstObj);
+            
+        }
+        if(qualificationToInsert.size()>0){
+            insert qualificationToInsert;
+            return 'success';
+        }else{
+            return 'unsuccess';
+        }
     }
     public class QualificationObj{
         @AuraEnabled 
@@ -63,17 +70,22 @@ public with sharing class candidateController {
     }
     
     //<<-------------------------------------------------------------------------------------------->>
-
+    
     ////<<-------------------------------------------------------------------------------------------->>
     
     
     @AuraEnabled
     // @method uploadFile() 
     public static String uploadFile(String base64, String filename, String recordId) {
+        
+        
+        system.debug('filename = '+filename);
+        system.debug('recordid = '+recordId);
         ContentVersion cv = createContentVersion(base64, filename);
         ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
         if (cv == null || cdl == null) { return null; }
         return cdl.Id;
+        
     }
     
     // @method createContentVersion() [private]
@@ -114,33 +126,33 @@ public with sharing class candidateController {
     }
     
     /* This code is used for sending otp 
-     * defintion :  generating random numnber
-     * Code By Shubham Vishnoi*/
+* defintion :  generating random numnber
+* Code By Shubham Vishnoi*/
     public static Integer  getNumber(){
         return Math.round((Math.random() * (900000) + 100000));
     } 
     
     /* This code is used for sending OTP to the Email field we get from LWC
-     * Code By Shubham Vishnoi*/
+* Code By Shubham Vishnoi*/
     
     @AuraEnabled
-    public static void sendOTP(String EmailField){
-    Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-    message.toAddresses = new String[] { EmailField };
-        message.optOutPolicy = 'FILTER';
-    message.subject = 'OTP Verification';
-    message.plainTextBody = String.valueOf(candidateController.getNumber());
-    Messaging.SingleEmailMessage[] messages =   new List<Messaging.SingleEmailMessage> {message};
-        Messaging.SendEmailResult[] results = Messaging.sendEmail(messages);
-    
-    if (results[0].success) 
-    {
-        System.debug('The email was sent successfully.');
-    } else 
-    {
-        System.debug('The email failed to send: ' + results[0].errors[0].message);
-    }
-    
+    public static String sendOTP(String EmailField, String otpText, String otpValuehere){
+        Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
+        message.toAddresses = new String[] { EmailField };
+            message.optOutPolicy = 'FILTER';
+        message.subject = 'OTP Verification';
+        message.plainTextBody = String.valueOf(candidateController.getNumber());
+        system.debug('Otp sent on the mail ==> '+message.plainTextBody);
+        otpValuehere = message.plainTextBody;
+        
+        
+        
+        
+        Messaging.SingleEmailMessage[] messages =   new List<Messaging.SingleEmailMessage> {message};
+            Messaging.SendEmailResult[] results = Messaging.sendEmail(messages);
+        return otpValuehere;
+
+        
     }
     
 }
