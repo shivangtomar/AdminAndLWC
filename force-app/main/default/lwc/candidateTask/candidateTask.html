@@ -8,7 +8,7 @@
             <div class="slds-grid slds-gutters">
                 <div class="slds-col">
                     <lightning-input label="First Name" value={getCandidateRecord.FirstName}
-                        onchange={handleFirstNameChange}>
+                        onchange={handleFirstNameChange} required>
                     </lightning-input>
                 </div>
 
@@ -44,7 +44,7 @@
                         message-when-pattern-mismatch="Please Enter Valid Email Address"
                         value={getCandidateRecord.Email} onchange={handleEmailChange}>
                     </lightning-input>
-                    <p if:true={SentOtp}>OTP SENT</p>
+                    <p if:true={SentOtp} class="otpcss">OTP send successfully. Please check your email</p>
                 </div>
                 
 
@@ -55,8 +55,8 @@
                 <div class="slds-col">
                     <lightning-input label="Enter Your OTP" value={otpValue} onchange={handleOtpChange}>
                     </lightning-input>
-                    <p if:true={VerfiedOtp}>Otp Verified</p>
-                    <p if:false={VerfiedOtp}><span if:true={messageOtp}>{messageOtp}</span></p>
+                    <p class="otpcss" if:true={VerfiedOtp}>Otp Verified</p>
+                    <p if:false={VerfiedOtp}><span class="otpcss" if:true={messageOtp}>{messageOtp}</span></p>
                 </div>
                 <div class="slds-col slds-p-top_large">
                     <lightning-button label="Verify OTP" variant="brand" value={otpValue} onclick={handleOtpVerify}>

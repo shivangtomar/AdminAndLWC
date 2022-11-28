@@ -213,16 +213,12 @@ export default class candidateTask extends LightningElement {
     // File Upload - Upload Button
 
     handleopenfileUpload(event) {
-        console.log('INSIDE lstUploadedFiles');
         var selectedRow = event.currentTarget;
         var key = selectedRow.dataset.id;
-        console.log('hello ',this.qualList)
-        console.log(this.qualList[key])
-        console.log('target', event.target.files)
+        
        
         const file = event.target.files[0]
-        console.log(this.qualList)
-        console.log(this.qualList[key])
+        
         var reader = new FileReader()
         reader.onload = () => {
             var base64 = reader.result.split(',')[1]
@@ -282,7 +278,14 @@ export default class candidateTask extends LightningElement {
 
                 createQualificationRecord({ quList: JSON.stringify(this.qualList), qualId: this.candidateId })
                     .then(result => {
-                        this.qualList = [];
+                        this.qualList = [{
+                            selectqualification: '',
+                            fileData: '',
+                            filenameShivang: '',
+                            yearOfpassing: '',
+                            percentage: null,
+                            key: ''
+                        }];
 
                     })
                     .catch(errorQ => {
@@ -352,7 +355,7 @@ export default class candidateTask extends LightningElement {
 
         }
         else{
-            this.messageOtp = 'Incorrect OTP'
+            this.messageOtp = 'Incorrect OTP Check your Otp'
             
             this.VerfiedOtp = false;
         }
