@@ -1,0 +1,135 @@
+<template>
+    <lightning-card icon-name="custom:custom13" title="Qualification Details">
+        <div class="slds-p-around_medium">
+
+            <!-- Qualification 2 START -->
+
+            <div class="slds-m-around--xx-medium container-fluid">
+
+                <div class="container-fluid">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <!-- <th scope="col">
+                                    <div class="slds-truncate">#</div>
+                                </th> -->
+                             <!--    <th scope="col">
+                                    <div class="slds-truncate" title="Select Qualification">Select Qualification</div>
+                                </th> -->
+                           <!--      <th scope="col">
+                                    <div class="slds-truncate" title="Year Of Passing">Year Of Passing</div>
+                                </th> -->
+
+                            <!--     <th scope="col">
+                                    <div class="slds-truncate" title="Percentage">Percentage</div>
+                                </th> -->
+                             <!--    <th scope="col">
+                                    <div class="slds-truncate" title="Marksheet">Marksheet</div>
+                                </th> -->
+                             <!--    <th scope="col">
+                                    <div class="slds-truncate" title="Action">Action</div>
+                                </th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+
+                            <template for:each={qualList} for:item="qual" for:index="indx">
+
+                                <tr key={qual.key} id={qual.key}>
+                                    <!-- <td>{indx}</td> -->
+<!--                             <td>
+                                        <template if:true={SelectqualPicklistValues.data}>
+
+                                            <lightning-combobox data-id={indx} name="progress"
+                                                label="Select Qualification" value={qual.SelectQualification}
+                                                placeholder="-Select-" options={SelectqualPicklistValues.data.values}
+                                                onchange={handleQualificationChange}>
+
+                                            </lightning-combobox>
+
+                                        </template>
+                                    </td>  -->
+
+                                    <td>
+                                        <lightning-input 
+                                            type="text"
+                                            data-id={indx}
+                                            label="Cpmpany Name" 
+                                            value={qual.cname}
+                                            onchange={handlecnameChange}>
+                                        </lightning-input>
+                                    </td>
+
+                                    <td>
+                                        <lightning-input 
+                                        type="date"  
+                                        data-id={indx}
+                                        label="From Date"
+                                        value={qual.fromdate}
+                                        onchange={handlefromdateChange}
+                                       >
+                                        </lightning-input>
+                                    </td>
+
+                                    <td>
+
+
+                                        <lightning-input 
+                                        data-id={indx} 
+                                        type="date"
+                                        value={qual.todate}
+                                        label="To Date"
+                                        onchange={handletodateChange}>
+                                    </lightning-input>
+
+                                    </td>
+
+                                    <td>
+
+
+                                        <lightning-input 
+                                        data-id={indx} 
+                                        type="checkbox"
+                                        value={qual.Currentlyworking}
+                                        label="Currently Working Here ?"
+                                        onchange={handleCurrentlyworkingChange}>
+                                    </lightning-input>
+
+                                    </td>
+
+                                    <td>
+                                        <lightning-button-icon icon-name="utility:add" data-id={indx}
+                                            alternative-text="Add Row" class="slds-m-left_xx-small" onclick={addRow}
+                                            title="Add Row">
+                                        </lightning-button-icon>
+
+
+
+                                        <lightning-button-icon icon-name="utility:delete" data-id={indx}
+                                            alternative-text="Delete" class="slds-m-left_x-small" onclick={removeRow}
+                                            title="Delete"></lightning-button-icon>
+                                    </td>
+                                </tr>
+                            </template>
+
+                        </tbody>
+                    </table>
+                    <div class="slds-p-bottom_large"></div>
+
+
+
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <p class="slds-p-top_medium">
+                <lightning-button class="slds-align_absolute-center" label="Submit" variant="brand" value={save}
+                    disabled={disableBtn} onclick={handleSaveShivang}>
+                </lightning-button>
+            </p>
+        </div>
+    </lightning-card>
+</template>

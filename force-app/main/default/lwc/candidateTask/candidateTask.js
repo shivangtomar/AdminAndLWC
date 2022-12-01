@@ -5,6 +5,9 @@ import createCandidate from '@salesforce/apex/candidateController.createCandidat
 import sendOTP from '@salesforce/apex/candidateController.sendOTP';
 import createQualificationRecord from '@salesforce/apex/candidateController.createQualificationRecord';
 
+// importing static resource from org
+import team6StaticResource from '@salesforce/resourceUrl/team6StaticResource';
+
 // PICKLIST FIELD REQUIREMENTS
 import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
@@ -23,15 +26,27 @@ export default class candidateTask extends LightningElement {
     //<<-------------------------------------------------------------------------------------------->>
     @api recordId;
     @track error;
-    @track candidateId;
+    @api candidateId;
+    @api siddharttask;
+
     @track qualificationId;
     @track value;
     EmailToAddress;
-    SentOtp;
+    SentOtp = false;
     VerfiedOtp;
     messageOtp;
 
-    otpvalueData;
+    otpvalueData = null;
+    otpValue = null;
+
+
+
+
+
+
+
+
+
 
 
     @track lstAllFiles = [];
@@ -137,6 +152,8 @@ export default class candidateTask extends LightningElement {
     handleFirstNameChange(event) {
         this.getCandidateRecord.FirstName = event.target.value;
         console.log('First Name ==> ' + this.getCandidateRecord.FirstName);
+        this.siddharttask = event.target.value;
+        console.log('Sidtask ==> ' + this.siddharttask);
     }
 
     handleMiddleNameChange(event) {
@@ -161,8 +178,10 @@ export default class candidateTask extends LightningElement {
     }
 
     handleEmailChange(event) {
+
         this.getCandidateRecord.Email = event.target.value;
         this.EmailToAddress = event.target.value;
+
         console.log('Email ==> ' + this.getCandidateRecord.Email);
     }
 
@@ -215,10 +234,10 @@ export default class candidateTask extends LightningElement {
     handleopenfileUpload(event) {
         var selectedRow = event.currentTarget;
         var key = selectedRow.dataset.id;
-        
-       
+
+
         const file = event.target.files[0]
-        
+
         var reader = new FileReader()
         reader.onload = () => {
             var base64 = reader.result.split(',')[1]
@@ -232,6 +251,36 @@ export default class candidateTask extends LightningElement {
         reader.readAsDataURL(file)
     }
 
+
+
+    //BATCH 6 BEFORE SUBMIT
+
+
+    SamplePDFURL = team6StaticResource;
+
+    // variables related to checkbox
+    ischecked = false;
+    pdfVisible = false;
+
+    // variables related to submit button 
+    disableBtn = true;
+
+    // onclick of check box, handleChange function renders the pdf and enables the submit button, vice-versa
+    @api handleChange(event) {
+        if (event.target.checked) {
+            this.disableBtn = false;
+        }
+        else {
+            this.disableBtn = true;
+        }
+    }
+
+    handleAnchor() {
+        this.pdfVisible = true;
+    }
+
+
+
     //<<-------------------------------------------------------------------------------------------->>
     // SUBMIT BUTTON METHOD
     // SUBMIT BUTTON METHOD
@@ -239,7 +288,8 @@ export default class candidateTask extends LightningElement {
     // SUBMIT BUTTON METHOD
     //<<-------------------------------------------------------------------------------------------->>
 
-    handleSave() {
+    async handleSaveShivang(event) {
+
 
         // VALIDATION FOR FIELDS 
 
@@ -255,12 +305,11 @@ export default class candidateTask extends LightningElement {
         }
 
         // CANDIDATE METHOD CALLING
-
-        createCandidate({ FirstNamecls: this.getCandidateRecord.FirstName, MiddleNamecls: this.getCandidateRecord.MiddleName, LastNamecls: this.getCandidateRecord.LastName, Pancls: this.getCandidateRecord.Pan, Phonecls: this.getCandidateRecord.Phone, Emailcls: this.getCandidateRecord.Email, Addresscls: this.getCandidateRecord.Address })
+        
+        await createCandidate({ FirstNamecls: this.getCandidateRecord.FirstName, MiddleNamecls: this.getCandidateRecord.MiddleName, LastNamecls: this.getCandidateRecord.LastName, Pancls: this.getCandidateRecord.Pan, Phonecls: this.getCandidateRecord.Phone, Emailcls: this.getCandidateRecord.Email, Addresscls: this.getCandidateRecord.Address })
             .then(result => {
                 this.getCandidateRecord = {};
                 this.candidateId = result.Id;
-
 
                 window.console.log('Results ==> ' + result);
 
@@ -273,8 +322,6 @@ export default class candidateTask extends LightningElement {
                 }),);
 
                 //QUALIFICATION METHOD
-
-
 
                 createQualificationRecord({ quList: JSON.stringify(this.qualList), qualId: this.candidateId })
                     .then(result => {
@@ -293,6 +340,7 @@ export default class candidateTask extends LightningElement {
                         console.error(errorQ);
                     });
 
+
                 this.qualList.forEach(element => {
                     const { base64, filename, recordId } = element.fileData
                     uploadFile({ base64, filename, recordId: this.candidateId }).then(result => {
@@ -301,16 +349,27 @@ export default class candidateTask extends LightningElement {
                         this.toast(title)
                     }).then((result) => {
                         console.log('result: ', result);
+
                     }).catch((error) => {
                         console.log('Error: ', error);
                     })
 
                 });
-                // FILE METHOD CALLING 
+
+
+                // CALLING OTHERS SUBMIT BUTTONS
+
+
+                this.template.querySelector('c-company_-exp_-form').handleClick(this.candidateId);
 
 
 
-                //CANDIDATE CATCH
+
+                /* this.template.querySelector('c-file-upload-chunk').uploadFiles(); */
+
+
+
+
 
 
             })
@@ -318,6 +377,14 @@ export default class candidateTask extends LightningElement {
                 this.error = errorM.message;
                 console.error(errorM);
             });
+
+
+
+
+
+
+
+
 
 
     }
@@ -336,10 +403,14 @@ export default class candidateTask extends LightningElement {
 
     handleEmailVerify() {
 
-        sendOTP({ EmailField: this.EmailToAddress}).then(result => {
-            
+        sendOTP({ EmailField: this.EmailToAddress }).then(result => {
+
             this.otpvalueData = result;
-            this.SentOtp = true;
+            if (this.EmailToAddress != null) {
+                this.SentOtp = true;
+
+            }
+
 
         }).catch(error => {
             alert('Invalid Email . Please check . Thank You!!')
@@ -349,20 +420,19 @@ export default class candidateTask extends LightningElement {
     // HANDLE OTP VERIFICATION
 
     handleOtpVerify() {
-        if(this.otpvalueData === this.otpValue){
-            
+        if (this.otpvalueData === this.otpValue) {
+
             this.VerfiedOtp = true;
 
         }
-        else{
+        else {
             this.messageOtp = 'Incorrect OTP Check your Otp'
-            
+
             this.VerfiedOtp = false;
         }
-    //<<-------------------------------------------------------------------------------------------->>
+        //<<-------------------------------------------------------------------------------------------->>
 
     }
 
 
 }
-
