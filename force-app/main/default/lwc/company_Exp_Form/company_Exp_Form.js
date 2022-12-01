@@ -10,8 +10,6 @@ export default class Company_Exp_Form extends LightningElement {
     @track visible1 = true;
     @track visible2 = true;
     @api yathartdata;
-   
-    @track companyvalue = 'tcs';
 
 
     keyIndex = 0;
@@ -109,7 +107,7 @@ export default class Company_Exp_Form extends LightningElement {
             this.template.querySelectorAll('lightning-record-edit-form').forEach(element => {
                 element.submit();
 
-                /* return refreshApex(this.element); */
+                return refreshApex(this.element);
             });
 
         } else {

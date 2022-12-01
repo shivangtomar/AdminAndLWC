@@ -362,14 +362,7 @@ export default class candidateTask extends LightningElement {
 
                 this.template.querySelector('c-company_-exp_-form').handleClick(this.candidateId);
 
-
-
-
-                /* this.template.querySelector('c-file-upload-chunk').uploadFiles(); */
-
-
-
-
+                this.template.querySelector('c-file-upload-chunk').uploadFiles(); 
 
 
             })
