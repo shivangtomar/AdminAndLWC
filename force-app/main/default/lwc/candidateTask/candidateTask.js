@@ -13,7 +13,7 @@ import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import QUALIFICATION_OBJECT from '@salesforce/schema/Qualification__c';
 
-import SELECTQUALIFICATION_FIELD from '@salesforce/schema/Qualification__c.Select_Qualification__c';
+import SELECTQUALIFICATION_FIELD from '@salesforce/schema/Qualification__c.Qualification__c';
 
 // Import Upload File
 import uploadFile from '@salesforce/apex/candidateController.uploadFile';
@@ -26,18 +26,21 @@ export default class candidateTask extends LightningElement {
     //<<-------------------------------------------------------------------------------------------->>
     @api recordId;
     @track error;
+    @track errorMessage;
     @api candidateId;
-    @api siddharttask;
 
     @track qualificationId;
     @track value;
     EmailToAddress;
     SentOtp = false;
     VerfiedOtp;
-    messageOtp;
+    messageOtp = false;
+
+
 
     otpvalueData = null;
     otpValue = null;
+    EmailVerified = false; // For Checkbox
 
 
 
@@ -64,9 +67,6 @@ export default class candidateTask extends LightningElement {
     @track index = 0;
     @api qualRecordId;
     isLoaded = false;
-    get acceptedFormats() {
-        return ['.pdf', '.png', '.jpg', '.xlsx'];
-    }
 
     //<<-------------------------------------------------------------------------------------------->>
 
@@ -152,8 +152,8 @@ export default class candidateTask extends LightningElement {
     handleFirstNameChange(event) {
         this.getCandidateRecord.FirstName = event.target.value;
         console.log('First Name ==> ' + this.getCandidateRecord.FirstName);
-        this.siddharttask = event.target.value;
-        console.log('Sidtask ==> ' + this.siddharttask);
+        /* this.siddharttask = event.target.value;
+        console.log('Sidtask ==> ' + this.siddharttask); */
     }
 
     handleMiddleNameChange(event) {
@@ -207,6 +207,7 @@ export default class candidateTask extends LightningElement {
         var key = selectedRow.dataset.id;
         var qVar = this.qualList[key];
         this.qualList[key].selectqualification = event.detail.value;
+        console.log('Selected Qualification', this.qualList[key].selectqualification);
 
     }
 
@@ -265,8 +266,14 @@ export default class candidateTask extends LightningElement {
     // variables related to submit button 
     disableBtn = true;
 
+
     // onclick of check box, handleChange function renders the pdf and enables the submit button, vice-versa
     @api handleChange(event) {
+
+
+        this.ischecked = true;
+        console.log('before submit', this.ischecked);
+
         if (event.target.checked) {
             this.disableBtn = false;
         }
@@ -275,9 +282,13 @@ export default class candidateTask extends LightningElement {
         }
     }
 
+
+
     handleAnchor() {
         this.pdfVisible = true;
     }
+
+
 
 
 
@@ -290,92 +301,127 @@ export default class candidateTask extends LightningElement {
 
     async handleSaveShivang(event) {
 
-
-        // VALIDATION FOR FIELDS 
-
-        const allValid = [...this.template.querySelectorAll('lightning-input')]
-            .reduce((validSoFar, inputCmp) => {
-                inputCmp.reportValidity();
-                return validSoFar && inputCmp.checkValidity();
-            }, true);
-        if (allValid) {
-            alert('All form entries look valid. Ready to submit!');
+        // incorrect otp
+        if (this.EmailVerified === false) {
+            alert('Incorrect OTP!');
+            console.log('Submit Otp = ', this.EmailVerified)
         } else {
-            alert('Please update the invalid form entries and try again.');
-        }
 
-        // CANDIDATE METHOD CALLING
-        
-        await createCandidate({ FirstNamecls: this.getCandidateRecord.FirstName, MiddleNamecls: this.getCandidateRecord.MiddleName, LastNamecls: this.getCandidateRecord.LastName, Pancls: this.getCandidateRecord.Pan, Phonecls: this.getCandidateRecord.Phone, Emailcls: this.getCandidateRecord.Email, Addresscls: this.getCandidateRecord.Address })
-            .then(result => {
-                this.getCandidateRecord = {};
-                this.candidateId = result.Id;
 
-                window.console.log('Results ==> ' + result);
+            // VALIDATION FOR FIELDS 
 
-                // Show Success Message
-                this.dispatchEvent(new ShowToastEvent({
-                    tite: 'Success',
-                    message: 'Record Created Successfully',
-                    variant: 'success'
+            const allValid = [...this.template.querySelectorAll('lightning-input')]
+                .reduce((validSoFar, inputCmp) => {
+                    inputCmp.reportValidity();
+                    return validSoFar && inputCmp.checkValidity();
+                }, true);
+            if (allValid) {
+                alert('All form entries look valid. Ready to submit!');
+            } else {
+                alert('Please update the invalid form entries and try again.');
+            }
 
-                }),);
+            // BATCH 6 REFRESH CODE
+            this.ischecked = false;
+            this.disableBtn = true;
+            this.pdfVisible = false;
+            console.log('ischecked after submit', this.ischecked);
 
-                //QUALIFICATION METHOD
+            // CANDIDATE METHOD CALLING
+            await createCandidate({ FirstNamecls: this.getCandidateRecord.FirstName, MiddleNamecls: this.getCandidateRecord.MiddleName, LastNamecls: this.getCandidateRecord.LastName, Pancls: this.getCandidateRecord.Pan, Phonecls: this.getCandidateRecord.Phone, Emailcls: this.getCandidateRecord.Email, Addresscls: this.getCandidateRecord.Address, EmailVerifiedcls: this.EmailVerified, otpValuecls: this.otpValue })
+                .then(result => {
+                    this.getCandidateRecord = {};
+                    this.otpValue = '';
+                    this.candidateId = result.Id;
 
-                createQualificationRecord({ quList: JSON.stringify(this.qualList), qualId: this.candidateId })
-                    .then(result => {
-                        this.qualList = [{
-                            selectqualification: '',
-                            fileData: '',
-                            filenameShivang: '',
-                            yearOfpassing: '',
-                            percentage: null,
-                            key: ''
-                        }];
+                    window.console.log('Results ==> ' + result);
 
-                    })
-                    .catch(errorQ => {
-                        this.error = errorQ.message;
-                        console.error(errorQ);
+                    // Show Success Message
+                    this.dispatchEvent(new ShowToastEvent({
+                        tite: 'Success',
+                        message: 'Record Created Successfully',
+                        variant: 'success'
+
+                    }),);
+
+
+                    // HTML REFRESH
+                    this.SentOtp = false;
+                    this.VerfiedOtp = false;
+                    this.messageOtp = false;
+
+                    //QUALIFICATION METHOD
+
+                    createQualificationRecord({ quList: JSON.stringify(this.qualList), qualId: this.candidateId })
+                        .then(result => {
+                            this.qualList = [{
+                                selectqualification: '',
+                                fileData: '',
+                                filenameShivang: '',
+                                yearOfpassing: '',
+                                percentage: null,
+                                key: ''
+                            }];
+                            this.qualList[key].selectqualification = '';
+
+                        })
+                        .catch(errorQ => {
+                            this.error = errorQ.message;
+                            console.error(errorQ);
+                        });
+
+
+                    this.qualList.forEach(element => {
+                        const { base64, filename, recordId } = element.fileData
+                        uploadFile({ base64, filename, recordId: this.candidateId }).then(result => {
+
+                            let title = `${filename} uploaded successfully!!`
+                            this.toast(title)
+                        }).then((result) => {
+                            console.log('result: ', result);
+
+                        }).catch((error) => {
+                            console.log('Error: ', error);
+                        })
+
                     });
 
 
-                this.qualList.forEach(element => {
-                    const { base64, filename, recordId } = element.fileData
-                    uploadFile({ base64, filename, recordId: this.candidateId }).then(result => {
+                    // CALLING OTHERS SUBMIT BUTTONS
 
-                        let title = `${filename} uploaded successfully!!`
-                        this.toast(title)
-                    }).then((result) => {
-                        console.log('result: ', result);
 
-                    }).catch((error) => {
-                        console.log('Error: ', error);
-                    })
+                    this.template.querySelector('c-company_-exp_-form').handleClick(this.candidateId);
+
+                    this.template.querySelector('c-file-upload-chunk').uploadFiles();
+
+
+
+
+                })
+                .catch(errorM => {
+                    this.error = errorM.message;
+                    console.error(errorM);
+
+
+                    console.log('errorcheck = ', JSON.stringify(errorM));
+                    console.log('errorMessage = ', JSON.stringify(errorM.body.pageErrors[0].message));
+
+
+
+                    this.dispatchEvent(new ShowToastEvent({
+                        tite: 'Failed',
+                        message: errorM.body.pageErrors[0].message,
+                        variant: 'error'
+
+                    }),);
 
                 });
 
 
-                // CALLING OTHERS SUBMIT BUTTONS
-
-
-                this.template.querySelector('c-company_-exp_-form').handleClick(this.candidateId);
-
-                this.template.querySelector('c-file-upload-chunk').uploadFiles(); 
-
-
-            })
-            .catch(errorM => {
-                this.error = errorM.message;
-                console.error(errorM);
-            });
 
 
 
-
-
-
+        }
 
 
 
@@ -416,12 +462,17 @@ export default class candidateTask extends LightningElement {
         if (this.otpvalueData === this.otpValue) {
 
             this.VerfiedOtp = true;
+            this.EmailVerified = true;
+            console.log('Checkbox =', this.EmailVerified);
 
         }
         else {
+            this.messageOtp = true;
             this.messageOtp = 'Incorrect OTP Check your Otp'
 
             this.VerfiedOtp = false;
+            this.EmailVerified = false;
+            console.log('Checkbox =', this.EmailVerified);
         }
         //<<-------------------------------------------------------------------------------------------->>
 
