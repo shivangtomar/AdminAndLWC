@@ -1,0 +1,24 @@
+
+  
+.tableFixHead {
+    overflow-y: auto; /* make the table scrollable if height is more than 325 px  */
+    height: 325px; /* gives an initial height of 325px to the table */
+  }
+  .tableFixHead thead th {
+    position: sticky; /* make the table heads sticky */
+    top: 0px; /* table head will be placed from the top of the table and sticks to it */
+  }
+
+.colHead {
+    background-color: #00eaff;
+    height: 74px;
+    width: auto;
+    margin-top: -27px;
+    top: 10px;
+    font-size: 25px;
+    font-family: verdana;
+}
+
+.colHeader{
+    height: 38px;
+}

@@ -1,0 +1,406 @@
+<template>
+
+    <!-- ======================= ADD STAFF BUTTON  ======================= -->
+    <!-- ======================= ADD STAFF BUTTON  ======================= -->
+    <template if:true={showModal}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Staff Data
+                    </h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+                    <div class="slds-wrap slds-grid">
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-combobox name="memberPicklisttitle" label="Title" value={titleValue}
+                                    placeholder="Select Title" options={options} onchange={memberHandleChange}>
+                                </lightning-combobox>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input required label="First Name" name="memberFirstName" type="text"
+                                    value={memberObFirstName} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Last Name" name="memberLastName" type="text"
+                                    value={memberObLastName} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Mid Name" name="memberMidName" type="text"
+                                    value={memberObMidName} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Email" name="memberEmail" type="email" value={memberObjEmail}
+                                    onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Phone" pattern="[0-9]{10}"
+                                    message-when-pattern-mismatch="Please Enter Valid Mobile Number" name="memberPhone"
+                                    type="phone" value={memberObjPhone} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-combobox name="memberDealing" label="Dealing with" value={value1}
+                                    placeholder="Select deal" options={options1} onchange={memberHandleChange}>
+                                </lightning-combobox>
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <div class="slds-align_absolute-center">
+                        <p slot="footer">
+                            <lightning-button type="brand" label="Submit" variant="brand" size="small"
+                                onclick={submitAction}>
+                            </lightning-button>
+                            <lightning-layout-item padding="around-medium">
+                                <lightning-button label="Cancel" size="small" onclick={cancelButtonHandler}>
+                                </lightning-button>
+                            </lightning-layout-item>
+                        </p>
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+
+    <!-- ======================= VIEW BUTTON  ======================= -->
+    <!-- ======================= VIEW BUTTON  ======================= -->
+
+
+    <template if:true={isenableViewForm}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={close2Modal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">Staff Data
+                    </h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium">
+
+                    <div class="slds-wrap slds-grid">
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-combobox disabled="true" name="memberPicklisttitle" label="Title"
+                                    value={titleValue} placeholder="Select Title" options={options}
+                                    onchange={memberHandleChange}>
+                                </lightning-combobox>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input disabled="true" required label="First Name" name="memberFirstName"
+                                    type="text" value={editFirstName} onchange={handlerFirstname}>
+                                </lightning-input>
+
+
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input disabled="true" label="Last Name" name="memberLastName" type="text"
+                                    value={memberObLastName} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input disabled="true" label="Mid Name" name="memberMidName" type="text"
+                                    value={memberObMidName} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input disabled="true" label="Email" name="memberEmail" type="email"
+                                    value={editEmail} onchange={handlerEmail}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input disabled="true" label="Phone" pattern="[0-9]{10}"
+                                    message-when-pattern-mismatch="Please Enter Valid Mobile Number" name="memberPhone"
+                                    type="phone" value={editPhone} onchange={handlerPhone}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-combobox disabled="true" name="memberDealing" label="Dealing with"
+                                    value={value1} placeholder="Select deal" options={options1}
+                                    onchange={memberHandleChange}>
+                                </lightning-combobox>
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <div class="slds-align_absolute-center">
+                        <p slot="footer">
+                            <!-- <lightning-button type="brand" label="Submit" variant="brand" size="small"
+                                onclick={updateDetails}>
+                            </lightning-button> -->
+                            <lightning-layout-item padding="around-medium">
+                                <lightning-button label="Cancel" size="small" onclick={cancel2ButtonHandler}>
+                                </lightning-button>
+                            </lightning-layout-item>
+                        </p>
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+
+    <!-- ======================= EDIT BUTTON  ======================= -->
+    <!-- ======================= EDIT BUTTON  ======================= -->
+
+
+    <template if:true={isdisableViewForm}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={close3Modal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse"
+                            size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate">Staff Data
+                    </h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium">
+
+                    <div class="slds-wrap slds-grid">
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-combobox name="memberPicklisttitle" label="Title" value={titleValue}
+                                    placeholder="Select Title" options={options} onchange={memberHandleChange}>
+                                </lightning-combobox>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input required label="First Name" name="memberFirstName" type="text"
+                                    value={editFirstName} onchange={handlerFirstname}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Last Name" name="memberLastName" type="text"
+                                    value={memberObLastName} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Mid Name" name="memberMidName" type="text"
+                                    value={memberObMidName} onchange={memberHandleChange}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Email" name="memberEmail" type="email" value={editEmail}
+                                    onchange={handlerEmail}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-input label="Phone" pattern="[0-9]{10}"
+                                    message-when-pattern-mismatch="Please Enter Valid Mobile Number" name="memberPhone"
+                                    type="phone" value={editPhone} onchange={handlerPhone}>
+                                </lightning-input>
+                            </p>
+                        </div>
+                        <div class="slds-col slds-size_6-of-12 slds-p-horizontal--small slds-m-bottom--medium">
+                            <p>
+                                <lightning-combobox name="memberDealing" label="Dealing with" value={value1}
+                                    placeholder="Select deal" options={options1} onchange={memberHandleChange}>
+                                </lightning-combobox>
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <div class="slds-align_absolute-center">
+                        <p slot="footer">
+                            <lightning-button type="brand" label="Submit" variant="brand" size="small"
+                                onclick={updateDetails}>
+                            </lightning-button>
+                            <lightning-layout-item padding="around-medium">
+                                <lightning-button label="Cancel" size="small" onclick={cancel3ButtonHandler}>
+                                </lightning-button>
+                            </lightning-layout-item>
+                        </p>
+                    </div>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- ======================= TABLE DATA HTML  ======================= -->
+    <!-- ======================= TABLE DATA HTML  ======================= -->
+
+    <lightning-card class="bgSBox">
+        <div class="slds-align_absolute-center colHead">
+            <!-- ======== DIV 1  ======== -->
+            <div style="width: 10%;" class="slds-align_absolute-center">
+                <p></p>
+            </div>
+            <!-- ======== DIV 2  ======== -->
+            <div style="width: 80%;" class="slds-align_absolute-center">
+                <lightning-icon icon-name="custom:custom15"></lightning-icon>
+                <h5 slot="title ">
+                    <b class="slds-p-left_small">Our Staff Data </b>
+                </h5>
+            </div>
+            <!-- ======== DIV 3  ======== -->
+            <div style="width: 10%;" class="slds-align_absolute-center">
+                <a> <img onclick={backButtonHandler} src={Home} width="50" height="50" title="Go Back To Home Page"></a>
+            </div>
+
+
+
+
+        </div>
+        <div class="slds-box bgSBox">
+
+            <lightning-layout class="slds-align_absolute-left" multiple-rows="true">
+
+                <!-- ======== Search Staff here  ======== -->
+                <lightning-layout-item padding="around-small" size="2">
+                    <lightning-input label="Search Name" placeholder="Search Staff here..." value={staffName}
+                        onchange={searchStaffAction} style="width: 200px !important;"></lightning-input>
+                </lightning-layout-item>
+
+                <!-- ======== RECORD TYPE  ======== -->
+                <lightning-layout-item padding="around-small" size="2">
+                    <lightning-combobox name="Filter" label="Staff Type" value={staffFilterValue}
+                        placeholder="Select Filter" options={optionFilter} onchange={handleFilter}
+                        style="width: 200px;"></lightning-combobox>
+                </lightning-layout-item>
+
+                <!-- ======== SEARCH EMAIL  ======== -->
+                <lightning-layout-item padding="around-small" size="2">
+                    <lightning-input label="Search Email" placeholder="Search Email here..." value={EmailName}
+                        onchange={searchEmailAction} style="width: 200px !important;"></lightning-input>
+                </lightning-layout-item>
+
+                <lightning-layout-item class="slds-align_absolute-right" padding="around-small" size="2">
+                </lightning-layout-item>
+                <lightning-layout-item class="slds-align_absolute-right" padding="around-small" size="2">
+                </lightning-layout-item>
+
+                <lightning-layout-item class="slds-align_absolute-right buttonCss" padding="around-small" size="2">
+                    <lightning-button icon-name="utility:add" label="Add Staff" onclick={openStaffForm}
+                        variant="brand-outline" style="float: right;"></lightning-button>
+                </lightning-layout-item>
+
+            </lightning-layout>
+
+
+        </div>
+
+        <div class="tableFixHead slds-p-around--medium">
+            <table class="slds-table slds-table--bordered slds-box slds-max-medium-table--stacked-horizontal">
+
+
+                <!-- ======== TABLE HEADER ======== -->
+                <!-- <thead> -->
+                <tbody>
+                    <tr>
+                        <th style="width: 5%;" class="colHeader"></th>
+                        <th style="width: 25%;" class="colHeader"><b>Name</b></th>
+                        <th style="width: 25%;" class="colHeader"><b>Email</b></th>
+                        <th style="width: 20%;" class="colHeader"><b>Phone</b></th>
+                        <th style="width: 20%;" class="colHeader"><b>Country</b></th>
+                        <th style="width: 5%;" class="colHeader"><b>Action</b></th>
+                    </tr>
+                    <!-- </thead> -->
+
+
+                    <template for:each={managementList} for:item="items" for:index="index">
+                        <tr class="slds-line-height--reset" key={items.Id}>
+                            <td> {index}</td>
+                            <td> {items.First_Name__c}</td>
+                            <td> {items.Email__c}</td>
+                            <td> {items.Phone_Number__c}</td>
+                            <td> {items.Country__c}</td>
+                            <td style="text-align: center;">
+                                <div class="lgc-bg">
+                                    <lightning-button-menu alternative-text="Show menu">
+                                        <lightning-menu-item data-index={index} onclick={handleView}
+                                            label="View"></lightning-menu-item>
+                                        <lightning-menu-item data-index={index} onclick={handleEdit}
+                                            label="Edit"></lightning-menu-item>
+                                    </lightning-button-menu>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </lightning-card>
+
+
+
+
+</template>
